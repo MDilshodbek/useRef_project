@@ -1,0 +1,57 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  max-width: 1280px;
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box {
+  width: 500px;
+  height: 500px;
+  background-color: orange;
+  margin: auto;
+  margin-top: 52px;
+}
+.details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 72px;
+  width: 100%;
+  margin-top: 20px;
+}
+.buttons {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  margin-top: 20px;
+}
+.lapp {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+  gap: 4px;
+}
+.history {
+  display: flex;
+  justify-content: center;
+}
