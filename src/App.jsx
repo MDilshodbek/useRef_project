@@ -1,20 +1,27 @@
 import "./App.css";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import { useEffect, useState, useRef } from "react";
 import { v4 } from "uuid";
 
 function App() {
+  const [milliSecond, setmilliSecond] = useState(0);
   const [second, setSecond] = useState(0);
   const [minute, setMinute] = useState(0);
   const [hour, setHour] = useState(0);
   const [running, setRunning] = useState(false);
   const timerRef = useRef(null);
   const [Lap, setLap] = useState([]);
+  const [lapName, setLapName] = useState("");
+  const [showInput, setShowInput] = useState(false);
 
-  // className="flex items-center justify-center"
-  // className="w-[500px] h-[500px] bg-orange-500 mt-52"
-  // className="flex justify-center gap-[10px] text-7xl w-full mt-[20px]"
-  // className="w-[80%] flex justify-between m-auto mt-[20px]"
+  const changemilliSecond = (previous) => {
+    if (previous === 100) {
+      setSecond(changeSecond);
+      return 0;
+    }
+
+    return previous + 1;
+  };
 
   const changeSecond = (previous) => {
     if (previous === 59) {
@@ -40,27 +47,42 @@ function App() {
     setSecond(0);
     setMinute(0);
     setHour(0);
+    setmilliSecond(0);
   };
 
   const onLap = () => {
-    setLap((previous) => {
-      return [
-        ...previous,
-        {
-          hour,
-          minute,
-          second,
-          id: v4(),
-        },
-      ];
-    });
+    setShowInput(true);
+  };
+
+  const addLap = () => {
+    if (lapName.trim() !== "") {
+      setLap((previous) => {
+        return [
+          ...previous,
+          {
+            hour: formatNumber(hour),
+            minute: formatNumber(minute),
+            second: formatNumber(second),
+            milliSecond: formatNumber(milliSecond),
+            name: lapName,
+            id: v4(),
+          },
+        ];
+      });
+      setLapName("");
+      setShowInput(false);
+    }
+  };
+
+  const resetLaps = () => {
+    setLap([]);
   };
 
   useEffect(() => {
     if (running)
       timerRef.current = setInterval(() => {
-        setSecond(changeSecond);
-      }, 1000);
+        setmilliSecond(changemilliSecond);
+      }, 10);
     else clearInterval(timerRef.current);
   }, [running]);
 
@@ -73,33 +95,81 @@ function App() {
       <div className="box">
         <div className="details">
           <h3>{formatNumber(hour)}</h3>:<h3>{formatNumber(minute)}</h3>:
-          <h3>{formatNumber(second)}</h3>
+          <h3>{formatNumber(second)}</h3>:<h3>{formatNumber(milliSecond)}</h3>
         </div>
         <div className="buttons">
-          <Button
-            type="primary"
-            onClick={onLap}
-            disabled={hour === 0 && minute === 0 && second === 0}
-          >
-            Lap
-          </Button>
+          {showInput ? (
+            <Input
+              placeholder="Enter lap name"
+              value={lapName}
+              onChange={(e) => setLapName(e.target.value)}
+            />
+          ) : (
+            <Button
+              type="primary"
+              onClick={onLap}
+              disabled={
+                hour === 0 && minute === 0 && second === 0 && milliSecond === 0
+              }
+            >
+              Lap
+            </Button>
+          )}
+          {showInput && (
+            <Button
+              type="primary"
+              onClick={addLap}
+              disabled={
+                hour === 0 && minute === 0 && second === 0 && milliSecond === 0
+              }
+            >
+              Add
+            </Button>
+          )}
+
           {running ? (
             <Button onClick={() => setRunning(false)}>Pause</Button>
           ) : (
-            <Button onClick={() => setRunning(true)}>Start</Button>
+            <Button onClick={() => setRunning(true)}> Start </Button>
           )}
-          <Button danger type="primary" onClick={reset}>
+          <Button
+            danger
+            type="primary"
+            onClick={() => {
+              reset();
+              setRunning(false);
+            }}
+          >
             Restart
           </Button>
         </div>
         <div className="lapp">
-          {Lap.map(({ id, hour, minute, second }) => {
+          {Lap.map(({ id, hour, minute, second, milliSecond, name }) => {
             return (
-              <div key={id} className="history">
-                <h3>{hour}</h3>:<h3>{minute}</h3>:<h3>{second}</h3>
+              <div key={id} className="flex items-center">
+                <h3>
+                  {hour < 10 ? `${hour}` : formatNumber(hour)}:
+                  {minute < 10 ? `${minute}` : formatNumber(minute)}:
+                  {second < 10 ? `${second}` : formatNumber(second)}:
+                  {milliSecond < 10
+                    ? `${milliSecond}`
+                    : formatNumber(milliSecond)
+                    ? `${milliSecond}`
+                    : milliSecond}{" "}
+                  - {name}
+                </h3>
               </div>
             );
           })}
+          {Lap.length > 0 && (
+            <Button
+              onClick={() => {
+                resetLaps();
+              }}
+            >
+              Clear
+            </Button>
+          )}
         </div>
       </div>
     </div>

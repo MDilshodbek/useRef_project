@@ -40,6 +40,7 @@
   width: 80%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: auto;
   margin-top: 20px;
 }
@@ -53,5 +54,6 @@
 }
 .history {
   display: flex;
-  justify-content: center;
+  margin-right: 20px;
+  align-items: center;
 }
