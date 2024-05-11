@@ -1,5 +1,5 @@
 import "./App.css";
-import { Button, Input } from "antd";
+import { Button, Input, Modal } from "antd";
 import { useEffect, useState, useRef } from "react";
 import { v4 } from "uuid";
 
@@ -13,6 +13,15 @@ function App() {
   const [Lap, setLap] = useState([]);
   const [lapName, setLapName] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const changemilliSecond = (previous) => {
     if (previous === 100) {
@@ -132,16 +141,17 @@ function App() {
           ) : (
             <Button onClick={() => setRunning(true)}> Start </Button>
           )}
-          <Button
-            danger
-            type="primary"
-            onClick={() => {
-              reset();
-              setRunning(false);
-            }}
-          >
+          <Button danger type="primary" onClick={showModal}>
             Restart
           </Button>
+          <Modal
+            title="Reminder"
+            open={isModalOpen}
+            onOk={reset}
+            onCancel={handleCancel}
+          >
+            <p>Are you sure you wanna clear datas ?</p>
+          </Modal>
         </div>
         <div className="lapp">
           {Lap.map(({ id, hour, minute, second, milliSecond, name }) => {
@@ -166,6 +176,7 @@ function App() {
               onClick={() => {
                 resetLaps();
               }}
+              className="mr-[20px]"
             >
               Clear
             </Button>
